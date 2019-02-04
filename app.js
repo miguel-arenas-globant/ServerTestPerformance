@@ -2,6 +2,10 @@ var express        =        require("express");
 var bodyParser     =        require("body-parser");
 var app            =        express();
 
+const lodash = require('lodash');
+const {mongoose} = require('./mongoose')
+const {Profiler} = require('./profiler')
+
 var options = {
   inflate: true,
   limit: '100M',
@@ -13,10 +17,26 @@ const port = process.env.PORT || 8080;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw());
 
-app.get('/', (req, res) => res.send('Hello World!'))
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+
+app.get('/', function (req, res){
+  Profiler.find().then((profilers) => {
+    console.log(profilers);
+  },(e) => {
+    
+  })
+});
+
 // POST method route
 app.post('/', function (req, res) {
+  let body = lodash.pick(req.body, ['name', 'cat', 'ph', 'pid', 'tid', 'ts']);
+  let profiler = new Profiler(body);
+  profiler.save().then(() => {
+    res.send('POST request to the homepage')
+  }).catch((e) => {
+  })
   console.log(req.body.toString())
-  res.send('POST request to the homepage')
 })
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
