@@ -22,21 +22,23 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 
 app.get('/', function (req, res){
-  Profiler.find().then((profilers) => {
+  /*Profiler.find().then((profilers) => {
     console.log(profilers);
   },(e) => {
     
-  })
+  })*/
+  console.log("Hello World");
 });
 
 // POST method route
 app.post('/', function (req, res) {
+  console.log(req.body.toString());
   let body = lodash.pick(req.body, ['name', 'cat', 'ph', 'pid', 'tid', 'ts']);
   let profiler = new Profiler(body);
   profiler.save().then(() => {
     res.send('POST request to the homepage')
   }).catch((e) => {
   })
-  console.log(req.body.toString())
+  
 })
 
