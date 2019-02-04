@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var ProfilerSchema = new mongoose.Schema({
+var ProfilerSchema = mongoose.model('Profiler',{
     name: {
         type: String
     },
