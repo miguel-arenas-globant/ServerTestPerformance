@@ -1,10 +1,7 @@
 var express        =        require("express");
 var bodyParser     =        require("body-parser");
 var app            =        express();
-
-const lodash = require('lodash');
-const {mongoose} = require('./mongoose')
-const {Profiler} = require('./profiler')
+var fs = require('fs');
 
 var options = {
   inflate: true,
@@ -12,33 +9,24 @@ var options = {
   type: 'application/octet-stream'
 };
 
-const port = process.env.PORT || 8080;
-
+const port = 3000
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw());
 
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
-
-app.get('/', function (req, res){
-  /*Profiler.find().then((profilers) => {
-    console.log(profilers);
-  },(e) => {
-    
-  })*/
-  console.log("Hello World");
-});
-
+app.get('/', function(req, res){
+	fs.readFile('myjsonfile.json', 'utf8', function (err, data) {
+  	if (err) throw err;
+	console.log(data);
+	res.send(data);
+	});
+	})
 // POST method route
 app.post('/', function (req, res) {
-  console.log(req.body.toString());
-  let body = lodash.pick(req.body, ['name', 'cat', 'ph', 'pid', 'tid', 'ts']);
-  let profiler = new Profiler(body);
-  profiler.save().then(() => {
-    res.send('POST request to the homepage')
-  }).catch((e) => {
-  })
-  
+  console.log(req.body.toString())
+  fs.appendFile('myjsonfile.json', req.body.toString() + ",\n\r", 'utf8',(err) => {
+  if (err) throw err;
+  console.log('The file has been saved!');
+});
+  res.send('POST request to the homepage')
 })
-
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
