@@ -30,4 +30,9 @@ app.post('/', function (req, res) {
 });
   res.send('POST request to the homepage')
 })
+
+app.get('/clear', function(req, res){
+  fs.writeFile('myjsonfile.json', '', function(){console.log('done clear')})
+}
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
