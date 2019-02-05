@@ -19,7 +19,8 @@ app.get('/', function(req, res){
 	console.log(data);
 	res.send(data);
 	});
-	})
+  })
+  
 // POST method route
 app.post('/', function (req, res) {
   console.log(req.body.toString())
