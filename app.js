@@ -32,7 +32,10 @@ app.post('/', function (req, res) {
 })
 
 app.get('/clear', function(req, res){
-  fs.writeFile('myjsonfile.json', '', function(){console.log('done clear')})
+  fs.writeFile('myjsonfile.json', '[', function()
+  {
+    res.send("Done clear");
+  })
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
