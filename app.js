@@ -25,8 +25,8 @@ var options = {
 
 const port = process.env.PORT || 8080;
 app.use(bodyParser.urlencoded({ extended: true }));
-//app.use(bodyParser.raw());
-app.use(bodyParser.json());
+app.use(bodyParser.raw());
+//app.use(bodyParser.json());
 
 app.get('/', function(req, res){
 	fs.readFile('myjsonfile.json', 'utf8', function (err, data) {
