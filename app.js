@@ -2,7 +2,7 @@ var express        =        require("express");
 var bodyParser     =        require("body-parser");
 var app            =        express();
 var fs = require('fs');
-
+const { exec } = require('child_process');
 
 var multer = require('multer');
 
@@ -16,24 +16,18 @@ const storage = multer.diskStorage({
 });
 var multerupload = multer({ storage: storage })
 
-
-var options = {
-  inflate: true,
-  limit: '100M',
-  type: 'application/octet-stream'
-};
+const routeUploads = "./uploads";
 
 const port = process.env.PORT || 8080;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw());
-//app.use(bodyParser.json());
 
 app.get('/', function(req, res){
-	fs.readFile('myjsonfile.json', 'utf8', function (err, data) {
-  	if (err) throw err;
-	console.log(data);
-	res.send(data);
-	});
+    fs.readFile('myjsonfile.json', 'utf8', function (err, data) {
+      if (err) throw err;
+    console.log(data);
+    res.send(data);
+    });
   })
   
 // POST method route
@@ -55,9 +49,19 @@ app.get('/clear', function(req, res){
 
 app.post('/save-file',multerupload.single('profiler'), function (req, res ){
   app.use(bodyParser.json());
-  console.log(req.file);
-  res.send("Done file upload");
+  var body = req.body;
+  var buffer = Buffer.from(body, 'base64');
+  const date = new Date().toISOString();
+  const fileNameData = date + "profiler.data";
+  const fileNameProfiler = date + "profiler.prof";
+  const fileProfilerRoute = routeUploads + "/" + fileNameProfiler;
+  const fileDataRoute = routeUploads + "/" + fileNameData;
+  fs.writeFile(fileDataRoute, buffer, function(err){});
+
   
+  exec('cat ' + fileDataRoute + '| base64 -D >' + fileProfilerRoute);
+  exec('rm -rf' + fileDataRoute);
+  res.send("Done file upload");
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
