@@ -24,7 +24,7 @@ npm run start
 **ROUTE** = /  
 **Description:** Show the data writed on **myjsonfile.json** file
 
-## Clean Google Tracing - POST
+## Clear Google Tracing - GET
 **ROUTE** = /clear  
 **Description:** Clear the **myjsonfile.json** file
 
