@@ -3,6 +3,20 @@ var bodyParser     =        require("body-parser");
 var app            =        express();
 var fs = require('fs');
 
+
+var multer = require('multer');
+
+const storage = multer.diskStorage({
+    destination: function(req,file,cb){
+      cb(null,'./uploads');
+    },
+    filename: function(req,file,cb){
+      cb(null,new Date().toISOString() + file.originalname);
+    }
+});
+var multerupload = multer({ storage: storage })
+
+
 var options = {
   inflate: true,
   limit: '100M',
@@ -11,7 +25,8 @@ var options = {
 
 const port = process.env.PORT || 8080;
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.raw());
+//app.use(bodyParser.raw());
+app.use(bodyParser.json());
 
 app.get('/', function(req, res){
 	fs.readFile('myjsonfile.json', 'utf8', function (err, data) {
@@ -36,6 +51,13 @@ app.get('/clear', function(req, res){
   {
     res.send("Done clear");
   })
+});
+
+app.post('/save-file',multerupload.single('profiler'), function (req, res ){
+  app.use(bodyParser.json());
+  console.log(req.file);
+  res.send("Done file upload");
+  
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
